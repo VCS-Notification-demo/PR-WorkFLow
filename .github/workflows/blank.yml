@@ -17,7 +17,8 @@ jobs:
           user: "demo-test"
           token: "${{ secrets.JENKINS_API_TOKEN }}"
           job: "PR_WORKFLOW" 
-
+      - name: Install jq
+        run: sudo apt-get install -y jq
 
       - name: Wait for Jenkins Build to Complete
         id: wait_for_build
