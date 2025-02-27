@@ -11,26 +11,9 @@ jobs:
 
     steps:
       - name: Trigger Jenkins Build
-        id: trigger
-        run: |
-          BUILD_URL=$(curl -X POST "http://52.207.221.112:8080/job/PR_WORKFLOW/buildWithParameters" \
-            --user "demo-test:${{ secrets.JENKINS_API_TOKEN }}" \
-            --silent --show-error --fail --location --write-out "%{url_effective}" --output /dev/null)
-          echo "BUILD_URL=$BUILD_URL" >> $GITHUB_ENV
-
-      - name: Wait for Jenkins Build to Complete
-        id: wait_for_build
-        run: |
-          JOB_URL="http://52.207.221.112:8080/job/PR_WORKFLOW"
-          BUILD_STATUS="pending"
-
-          while [[ "$BUILD_STATUS" != "SUCCESS" && "$BUILD_STATUS" != "FAILURE" ]]; do
-            BUILD_STATUS=$(curl -s --user "demo-test:${{ secrets.JENKINS_API_TOKEN }}" \
-              "$JOB_URL/lastBuild/api/json" | jq -r '.result')
-            echo "Current build status: $BUILD_STATUS"
-            sleep 10
-          done
-
-          if [ "$BUILD_STATUS" == "FAILURE" ]; then
-            exit 1
-          fi
+        uses: appleboy/jenkins-action@master
+        with:
+          url: "http://52.207.221.112:8080/"
+          user: "demo-test"
+          token: "${{ secrets.JENKINS_API_TOKEN }}"
+          job: "PR_WORKFLOW" 
