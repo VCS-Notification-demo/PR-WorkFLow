@@ -1,0 +1,40 @@
+name: Jenkins CI
+
+on:
+  pull_request:
+    branches:
+      - main  # Change to your protected branch
+
+jobs:
+  trigger-jenkins:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Jenkins Build
+        uses: appleboy/jenkins-action@master
+        with:
+          url: "http://52.207.221.112:8080/"
+          user: "demo-test"
+          token: "${{ secrets.JENKINS_API_TOKEN }}"
+          job: "PR_WORKFLOW" 
+      - name: Install jq
+        run: sudo apt-get install -y jq
+
+      - name: Wait for Jenkins Build to Complete
+        id: wait_for_build
+        run: |
+          JOB_URL="http://52.207.221.112:8080/job/PR_WORKFLOW"
+          BUILD_STATUS="null"
+
+          echo "Waiting for Jenkins job to complete..."
+          while [[ "$BUILD_STATUS" == "null" || "$BUILD_STATUS" == "IN_PROGRESS" || -z "$BUILD_STATUS" ]]; do
+            BUILD_STATUS=$(curl -s --user "demo-test:${{ secrets.JENKINS_API_TOKEN }}" \
+              "$JOB_URL/lastBuild/api/json" | jq -r '.result // "IN_PROGRESS"')
+            echo "Current build status: $BUILD_STATUS"
+            sleep 10
+          done
+
+          if [ "$BUILD_STATUS" != "SUCCESS" ]; then
+            echo "Jenkins job failed!"
+            exit 1
+          fi
