@@ -26,7 +26,7 @@ jobs:
           JOB_URL="http://52.23.197.40:8080/job/PR_WORKFLOW"
           BUILD_STATUS="null"
 
-          echo "Waiting for Jenkins job to complete..."
+          echo "Waiting for Jenkins job to complete...stop"
           while [[ "$BUILD_STATUS" == "null" || "$BUILD_STATUS" == "IN_PROGRESS" || -z "$BUILD_STATUS" ]]; do
             BUILD_STATUS=$(curl -s --user "demo-test:${{ secrets.JENKINS_API_TOKEN }}" \
               "$JOB_URL/lastBuild/api/json" | jq -r '.result // "IN_PROGRESS"')
