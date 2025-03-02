@@ -13,7 +13,7 @@ jobs:
       - name: Trigger Jenkins Build
         uses: appleboy/jenkins-action@master
         with:
-          url: "http://52.207.221.112:8080/"
+          url: "http://52.23.197.40:8080/"
           user: "demo-test"
           token: "${{ secrets.JENKINS_API_TOKEN }}"
           job: "PR_WORKFLOW" 
@@ -23,7 +23,7 @@ jobs:
       - name: Wait for Jenkins Build to Complete
         id: wait_for_build
         run: |
-          JOB_URL="http://52.207.221.112:8080/job/PR_WORKFLOW"
+          JOB_URL="http://52.23.197.40:8080/job/PR_WORKFLOW"
           BUILD_STATUS="null"
 
           echo "Waiting for Jenkins job to complete..."
