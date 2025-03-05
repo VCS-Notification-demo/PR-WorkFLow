@@ -1,0 +1,17 @@
+name: GitHub to Slack
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack Notification
+        run: |
+          curl -X POST -H 'Content-type: application/json' --data \
+          '{"text": "🚀 New push to repository: '${{ github.repository }}' by '${{ github.actor }}'"}' \
+          https://hooks.slack.com/services/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
+
